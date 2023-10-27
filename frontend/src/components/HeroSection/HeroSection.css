@@ -1,0 +1,21 @@
+.hero-section{
+    background-image: linear-gradient(rgba(0,0,0,.548),rgba(0,0,0,.5)),url("../../assets/hero-image.jpg");
+    height: 70vh;
+    width: 100%;
+    background-position: center center; /* to give center to both x and y axis*/
+    background-size: cover;
+    background-repeat: no-repeat;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.hero-title{
+    font-family: 'Poppins', sans-serif;
+    text-align: center;
+    line-height: 1.5;
+    color: #fff;
+    font-size: 3vw;
+    font-weight: 300;
+    width: 50vw;
+}
