@@ -1,9 +1,12 @@
-import React from 'react'
+import React from "react";
+import Header from "../Header/Header";
 
 function LandingPage() {
   return (
-    <div>LandingPage</div>
-  )
+    <div className="landing-page-container">
+      <Header onPage="home" />
+    </div>
+  );
 }
 
-export default LandingPage
+export default LandingPage;
