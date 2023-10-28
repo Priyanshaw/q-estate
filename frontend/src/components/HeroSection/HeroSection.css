@@ -1,5 +1,5 @@
 .hero-section{
-    background-image: linear-gradient(rgba(0,0,0,.548),rgba(0,0,0,.5)),url("../../assets/hero-image.jpg");
+    background-image: linear-gradient(rgba(0,0,0,.548),rgba(0,0,0,.5)),url("../../../public/assets/hero-image.jpg");
     height: 70vh;
     width: 100%;
     background-position: center center; /* to give center to both x and y axis*/
