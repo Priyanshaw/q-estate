@@ -1,0 +1,22 @@
+.listings-detail{
+    padding: 0 8px;
+    width: 100%;
+    font-family: "Poppins", sans-serif;
+    display: flex;
+    justify-content: space-between;
+    font-size: 16px;
+}
+.property-name{
+    font-family: "Poppins", sans-serif;
+    font-weight: 500;
+}
+.property-price{
+    font-weight: bold;
+
+}
+.property-city{
+    background-color: rgb(139, 22, 22);
+    color: #fff;
+    border-radius: 30px;
+    padding: 0px 10px;
+}

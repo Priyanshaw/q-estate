@@ -31,7 +31,7 @@ export default function FeaturedListings() {
 
   return (
     <Box sx={{ width: "100%" }}>
-      <Grid container rowSpacing={1} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
+      <Grid container rowSpacing={4} columnSpacing={{ xs: 1, sm: 2, md: 3 }}>
         {listingsData.length === 0 ? (
           <Grid item>
             <div classname="error-message">
@@ -45,13 +45,13 @@ export default function FeaturedListings() {
               <CardActionArea>
                 <CardMedia
                   component="img"
-                  height="140"
+                  height="200"
                   image={`/assets/real-estate-${index}.jpg`}
                   alt="green iguana"
                 />
                 <CardContent>
-                  <Typography gutterBottom variant="h5" component="div">
-                    {elem.property_name}
+                  <Typography gutterBottom variant="h5" component="div" className="property-name">
+                    {elem.property_name.slice(0, 16)}
                   </Typography>
                 </CardContent>
                 <CardActions>

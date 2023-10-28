@@ -1,0 +1,9 @@
+.card-container{
+    width: 80vw;
+    margin-left: auto;
+    margin-right: auto;
+}
+.featured-listings-title{
+    font-family: "Poppins", sans-serif;
+    margin:   50px 0px;
+}
