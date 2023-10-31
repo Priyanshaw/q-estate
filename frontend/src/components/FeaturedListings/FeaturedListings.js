@@ -55,7 +55,7 @@ export default function FeaturedListings() {
                   </Typography>
                 </CardContent>
                 <CardActions>
-                    <div className="listings-detail">
+                    <div className="listings-detail" key={index}>
                         <span className="property-price">Rs {elem.price}</span>
                         <span className="property-city">{elem.city}</span>
                     </div>
