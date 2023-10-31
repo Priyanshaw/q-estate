@@ -50,7 +50,8 @@ export default function Explore() {
     }
     
   };
-  const handleSortByChange = () => {
+  const handleSortByChange = (event) => {
+    setSortBy(event.target.value)
 
   };
 
@@ -70,7 +71,7 @@ export default function Explore() {
         locationFilter={locationFilter}
         
         />
-        <SortingFilter />
+        <SortingFilter sortBy={sortBy} handleSortByChange={handleSortByChange}/>
         <ListingsTableView />
       </div>
       <Footer />
