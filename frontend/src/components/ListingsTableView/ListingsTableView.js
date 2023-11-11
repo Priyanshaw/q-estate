@@ -16,7 +16,8 @@ export default function ListingsTableView({
   const [selectedRows, setSelectedRows] = useState([]); // INITIALLY NONE OF THE ROWS ARE SELECETTED SO EMPTY ARRAY
 
   // VARIABLES NEEDED
-  const itemsPerPage = 10; // for viewing total items in page
+  const itemsPerPage = 10; // for viewing total items in
+
   let displayData = applyFilters(
     filteredData,
     locationFilter,
@@ -26,6 +27,10 @@ export default function ListingsTableView({
   // const totalPages;
   // const startIndex; // to keep track of data which is coming on respective pages from start
   // const endIndex; // to keep track of data which is coming on respective pages from end so that while selecting all only data of 4th page is selected.
+
+  const totalPages = Math.ceil(displayData.length / itemsPerPage);
+  const startIndex = (currentPage - 1) * itemsPerPage;
+  const endIndex = startIndex + itemsPerPage; // adding it will give the last content of that page for ex for pageNo - 3 we have (19 + 10) data
 
   // function to be defined
   // 1 editing funciton
@@ -75,6 +80,19 @@ export default function ListingsTableView({
     console.log("updated data is here", updatedData);
     return updatedData;
   }
+
+  // function for displaying page no button
+
+  const getPageNumbers = (totalPages) =>{
+    const pageNumbers =[];
+    for(let currPage= 1;currPage<=totalPages;currPage++){
+      pageNumbers.push(currPage)
+    }
+    return pageNumbers;
+
+  }
+  const pageNumbers = getPageNumbers(totalPages); 
+
   useEffect(() => {
     setFilteredData(listingsData);
   }, [listingsData]);
@@ -96,22 +114,44 @@ export default function ListingsTableView({
           </tr>
         </thead>
         <tbody>
-          {displayData.map((data, index) => (
-            <tr className="table-row">
-              <td>
-                <input type="checkbox" />
-              </td>
-              <td className="property-name">{data.property_name}</td>
-              <td>Rs{data.price}</td>
-              <td>{data.address}</td>
-              <td>{data.listing_date}</td>
-              <td className="actions-items"> delete , modify</td>
-            </tr>
-          ))}
+          {displayData.slice(startIndex, endIndex).map(
+            (
+              data,
+              index // slice used here to slice the data from start endex this is how we have only 10 datas per page
+            ) => (
+              <tr className="table-row">
+                <td>
+                  <input type="checkbox" />
+                </td>
+                <td className="property-name">{data.property_name}</td>
+                <td>Rs{data.price}</td>
+                <td>{data.address}</td>
+                <td>{data.listing_date}</td>
+                <td className="actions-items"> delete , modify</td>
+              </tr>
+            )
+          )}
         </tbody>
       </table>
 
       {/* table footer */}
+      <div className="table-footer">
+        <button>Delete Selected</button>
+        <div className="pagination-container">
+          <span>
+            Page {totalPages < 1 ? 0 : currentPage} of {totalPages} {/* if total page is 0 i.e no data from backend then our current should also be 0*/} 
+          </span>
+          <div className="pagination-button">
+              <button>First</button>
+              <button>Previous</button>
+              {pageNumbers.map((page)=>(
+                <button key={page}>{page}</button>
+              ))}
+              <button>Next</button>
+              <button>Last</button>
+          </div>
+        </div>
+      </div>
     </div>
   );
 }
