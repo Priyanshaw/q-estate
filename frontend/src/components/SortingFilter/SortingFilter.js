@@ -3,12 +3,12 @@ import Box from '@mui/material/Box';
 import InputLabel from '@mui/material/InputLabel';
 import MenuItem from '@mui/material/MenuItem';
 import FormControl from '@mui/material/FormControl';
-import Select, { SelectChangeEvent } from '@mui/material/Select';
+import Select from '@mui/material/Select';
 
 
-const options = ["None", "Price", "Date"];
+const options = ["none", "price", "date"];
 
-export default function SortingFilter({handleSortByChange,sortBy}) {
+export default function SortingFilter({sortBy,handleSortByChange}) {
   return (
     <div className='sorting-filter-container'>
       <h2 className='title'>Sort By : </h2>
@@ -25,7 +25,7 @@ export default function SortingFilter({handleSortByChange,sortBy}) {
           {
             options.map((option, index) => (
               <MenuItem key={index} value={option}>
-                {option}                                    {  /* put this is bracket if not working ---- option && option[0].toUpperCase() + option.slice(1)  */}
+                {option && option[0].toUpperCase() + option.slice(1)}                                    {  /*  put this is bracket if not working ---- option && option[0].toUpperCase() + option.slice(1)  */}
                 </MenuItem>
             ))
           }

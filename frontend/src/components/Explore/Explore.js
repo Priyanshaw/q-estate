@@ -8,7 +8,7 @@ import ListingsTableView from "../ListingsTableView/ListingsTableView";
 import Footer from "../Footer/Footer";
 
 export default function Explore() {
-  const [listingsData, setListingsData] = useState();
+  const [listingsData, setListingsData] = useState([]);
   const [locationFilter, setLocationFilter] = useState([]);
   const [priceRangeFilter, setpriceRangeFilter] = useState([]);
   const [sortBy, setSortBy] = useState("");
@@ -19,6 +19,7 @@ export default function Explore() {
       let data = response.data.listings;
       console.log(data);
       setListingsData(data);
+      // console.log("This is listing data",listingsData);
     } catch (error) {
       console.log(error);
     }
@@ -62,17 +63,24 @@ export default function Explore() {
   return (
     <>
       <Header />
+
       <div className="property-listings-view">
+
         <CheckBoxFilter 
         handlePriceFilterChange={handlePriceFilterChange} // these two function are there to handle the logic upon 
         handleLocationFilterChange={handleLocationFilterChange} // changing and clicking of check boxes
         // these state variables are there to know which checkboxes are selected and are needed to passed as a props 
         priceRangeFilter={priceRangeFilter}
         locationFilter={locationFilter}
-        
         />
         <SortingFilter sortBy={sortBy} handleSortByChange={handleSortByChange}/>
-        <ListingsTableView />
+
+        <ListingsTableView //
+          listingsData={listingsData} // contains the data from api which we need to render in the table
+          priceRangeFilter={priceRangeFilter} // these three props are the filter which will help to filter the data
+          locationFilter={locationFilter}
+          sortBy={sortBy}
+        />
       </div>
       <Footer />
     </>
