@@ -1,4 +1,6 @@
 import React, { useEffect, useState } from "react";
+import { MdDelete } from 'react-icons/md';
+import {BiSolidEdit} from 'react-icons/bi';
 
 export default function ListingsTableView({
   listingsData,
@@ -16,7 +18,8 @@ export default function ListingsTableView({
   const [selectedRows, setSelectedRows] = useState([]); // INITIALLY NONE OF THE ROWS ARE SELECETTED SO EMPTY ARRAY
 
   // VARIABLES NEEDED
-  const itemsPerPage = 10; // for viewing total items in
+  const itemsPerPage = 10; // for viewing total items in a table
+  const isAllSelected = selectedRows.length === itemsPerPage;
 
   let displayData = applyFilters(
     filteredData,
@@ -34,9 +37,68 @@ export default function ListingsTableView({
 
   // function to be defined
   // 1 editing funciton
-  // 2 delete function
+  // 2 delete function in htis we will make use of filtered data so whatever changes we make should reflect upon reselecting the item.
+
+  const handleDelete =(id) =>{
+    const updatedData = filteredData.filter((data) => data.property_id !== id);
+
+    const updatedTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+    if(currentPage > updatedTotalPages){
+      setCurrentPage(updatedTotalPages);
+    }
+
+    setFilteredData(updatedData);
+  }
+  const handleDeleteAllSelected=()=>{}
   // 3 pagination function
-  // 4 checkbox
+  // 4 checkbox handlers
+
+  // function for checkbox selection individual and all selection
+
+  const handleRowCheckboxChange = (event, id) => {
+    const isChecked = event.target.checked;
+    if (isChecked) {
+      setSelectedRows([...selectedRows, id]);
+    } else {
+      setSelectedRows(selectedRows.filter((item) => item !== id));
+    }
+  };
+  const handleSelectAllCheckbox = (event, displayData) => {
+    const isAllSelected = event.target.checked;
+
+    if (isAllSelected) {
+      const startIndex = (currentPage - 1) * itemsPerPage;
+      let rowsSelected = [];
+      for (let i = startIndex; i < startIndex + itemsPerPage; i++) {
+        if (i < displayData.length) {
+          rowsSelected.push(displayData[i].property_id);
+        } else {
+          rowsSelected.push(Math.random()); // using math.random here as in last page we dont have 10 data so it will create a bug to avoid that we are adding some gibbereish data to it
+        }
+      }
+      setSelectedRows(rowsSelected);
+    } else {
+      setSelectedRows([]);
+    }
+  };
+
+  // HANDLING ALL THE PAGINATION CLICK FUNCTION
+
+  const handleFirstPage = () => {
+    setCurrentPage(1);
+  };
+  const handleLastPage = () => {
+    setCurrentPage(totalPages);
+  };
+  const handleNextPage = () => {
+    setCurrentPage(currentPage + 1);
+  };
+  const handlePreviousPage = () => {
+    setCurrentPage(currentPage - 1);
+  };
+  const handlePageClicks = (page) => {
+    setCurrentPage(page);
+  };
 
   // this function will appply all the filters
   function applyFilters(filteredData, location, priceRange, sortBy) {
@@ -83,19 +145,23 @@ export default function ListingsTableView({
 
   // function for displaying page no button
 
-  const getPageNumbers = (totalPages) =>{
-    const pageNumbers =[];
-    for(let currPage= 1;currPage<=totalPages;currPage++){
-      pageNumbers.push(currPage)
+  const getPageNumbers = (totalPages) => {
+    const pageNumbers = [];
+    for (let currPage = 1; currPage <= totalPages; currPage++) {
+      pageNumbers.push(currPage);
     }
     return pageNumbers;
-
-  }
-  const pageNumbers = getPageNumbers(totalPages); 
+  };
+  const pageNumbers = getPageNumbers(totalPages);
 
   useEffect(() => {
     setFilteredData(listingsData);
   }, [listingsData]);
+
+  useEffect(()=>{    // this use effect helps to soleve the bug when selecting price and location filter on page > 1 it shows page 11 of 4
+    setCurrentPage(1);
+    setSelectedRows([])
+  },[locationFilter,priceRangeFilter])
 
   return (
     <div className="listings-table-container">
@@ -104,7 +170,13 @@ export default function ListingsTableView({
         <thead>
           <tr>
             <th>
-              <input type="checkbox" onChange={""} checked={""} />
+              <input
+                type="checkbox"
+                onChange={(event) =>
+                  handleSelectAllCheckbox(event, displayData)
+                }
+                checked={isAllSelected}
+              />
             </th>
             <th>Property Name</th>
             <th>Price</th>
@@ -121,13 +193,22 @@ export default function ListingsTableView({
             ) => (
               <tr className="table-row">
                 <td>
-                  <input type="checkbox" />
+                  <input
+                    type="checkbox"
+                    onChange={(event) =>
+                      handleRowCheckboxChange(event, data.property_id)
+                    }
+                    checked={selectedRows.includes(data.property_id)}
+                  />
                 </td>
-                <td className="property-name">{data.property_name}</td>
+                <td className="listing-property-name">{data.property_name}</td>
                 <td>Rs{data.price}</td>
                 <td>{data.address}</td>
                 <td>{data.listing_date}</td>
-                <td className="actions-items"> delete , modify</td>
+                <td className="actions-items"> 
+                    <MdDelete onClick={()=>handleDelete(data.property_id)}/>
+                    <BiSolidEdit/>
+                </td>
               </tr>
             )
           )}
@@ -139,16 +220,33 @@ export default function ListingsTableView({
         <button>Delete Selected</button>
         <div className="pagination-container">
           <span>
-            Page {totalPages < 1 ? 0 : currentPage} of {totalPages} {/* if total page is 0 i.e no data from backend then our current should also be 0*/} 
+            Page {totalPages < 1 ? 0 : currentPage} of {totalPages}{" "}
+            {/* if total page is 0 i.e no data from backend then our current should also be 0*/}
           </span>
           <div className="pagination-button">
-              <button>First</button>
-              <button>Previous</button>
-              {pageNumbers.map((page)=>(
-                <button key={page}>{page}</button>
-              ))}
-              <button>Next</button>
-              <button>Last</button>
+            <button onClick={handleFirstPage} disabled={currentPage === 1}>
+              First
+            </button>
+            <button onClick={handlePreviousPage} disabled={currentPage === 1}>
+              Previous
+            </button>
+            {pageNumbers.map((page) => (
+              <button key={page} onClick={() => handlePageClicks(page)}>
+                {page}
+              </button>
+            ))}
+            <button
+              onClick={handleNextPage}
+              disabled={currentPage === totalPages}
+            >
+              Next
+            </button>
+            <button
+              onClick={handleLastPage}
+              disabled={currentPage === totalPages}
+            >
+              Last
+            </button>
           </div>
         </div>
       </div>
