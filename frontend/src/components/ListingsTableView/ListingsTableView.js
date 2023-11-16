@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
-import { MdDelete } from 'react-icons/md';
-import {BiSolidEdit} from 'react-icons/bi';
+import { MdDelete } from "react-icons/md";
+import { BiSolidEdit } from "react-icons/bi";
+import EditModal from "../EditModal/EditModal";
+import './ListingsTableView.css'
 
 export default function ListingsTableView({
   listingsData,
@@ -16,6 +18,9 @@ export default function ListingsTableView({
   const [currentPage, setCurrentPage] = useState(1); // setting default page of table to 1
   const [filteredData, setFilteredData] = useState([]); // for handling the edit and delete action only
   const [selectedRows, setSelectedRows] = useState([]); // INITIALLY NONE OF THE ROWS ARE SELECETTED SO EMPTY ARRAY
+  // states for editing
+  const [editingItem, setEditingItem] = useState(null);
+  const [isEditModalOpen, setIsEditModalOpen] = useState(false);
 
   // VARIABLES NEEDED
   const itemsPerPage = 10; // for viewing total items in a table
@@ -37,23 +42,55 @@ export default function ListingsTableView({
 
   // function to be defined
   // 1 editing funciton
+  const handleEdit = (data) => {
+    setEditingItem(data);
+    setIsEditModalOpen(true);
+  };
+  const handleEditSave = (editedItem) => {
+    const updatedData = [...filteredData];
+
+    const indexToBeEdited = updatedData.findIndex((data) => data.property_id === editedItem.property_id);
+
+    if(indexToBeEdited !== -1){
+      updatedData[indexToBeEdited] = editedItem;
+      setFilteredData(updatedData);
+    }
+    setEditingItem(null);
+  };
+
+  const handleEditCloseModal = () => {
+    setIsEditModalOpen(false);
+    setEditingItem(null);
+  };
   // 2 delete function in htis we will make use of filtered data so whatever changes we make should reflect upon reselecting the item.
 
-  const handleDelete =(id) =>{
+  const handleDelete = (id) => {
     const updatedData = filteredData.filter((data) => data.property_id !== id);
 
     const updatedTotalPages = Math.ceil(updatedData.length / itemsPerPage);
-    if(currentPage > updatedTotalPages){
+    if (currentPage > updatedTotalPages) {
       setCurrentPage(updatedTotalPages);
     }
 
     setFilteredData(updatedData);
-  }
-  const handleDeleteAllSelected=()=>{}
-  // 3 pagination function
-  // 4 checkbox handlers
+    setSelectedRows([]);
+  };
+  const handleDeleteAllSelected = () => {
+    if (selectedRows.length === 0) return;
+    const updatedData = filteredData.filter(
+      (data) => !selectedRows.includes(data.property_id)
+    );
+
+    const updatedTotalPages = Math.ceil(updatedData.length / itemsPerPage);
+    if (currentPage > updatedTotalPages);
+    setCurrentPage(updatedTotalPages);
+
+    setFilteredData(updatedData);
+    setSelectedRows([]);
+  };
 
   // function for checkbox selection individual and all selection
+  // 4 checkbox handlers
 
   const handleRowCheckboxChange = (event, id) => {
     const isChecked = event.target.checked;
@@ -81,23 +118,28 @@ export default function ListingsTableView({
       setSelectedRows([]);
     }
   };
-
+  // 3 pagination function
   // HANDLING ALL THE PAGINATION CLICK FUNCTION
 
   const handleFirstPage = () => {
     setCurrentPage(1);
+    setSelectedRows([]);
   };
   const handleLastPage = () => {
     setCurrentPage(totalPages);
+    setSelectedRows([]);
   };
   const handleNextPage = () => {
     setCurrentPage(currentPage + 1);
+    setSelectedRows([]);
   };
   const handlePreviousPage = () => {
     setCurrentPage(currentPage - 1);
+    setSelectedRows([]);
   };
   const handlePageClicks = (page) => {
     setCurrentPage(page);
+    setSelectedRows([]);
   };
 
   // this function will appply all the filters
@@ -158,10 +200,11 @@ export default function ListingsTableView({
     setFilteredData(listingsData);
   }, [listingsData]);
 
-  useEffect(()=>{    // this use effect helps to soleve the bug when selecting price and location filter on page > 1 it shows page 11 of 4
+  useEffect(() => {
+    // this use effect helps to soleve the bug when selecting price and location filter on page > 1 it shows page 11 of 4
     setCurrentPage(1);
-    setSelectedRows([])
-  },[locationFilter,priceRangeFilter])
+    setSelectedRows([]);
+  }, [locationFilter, priceRangeFilter]);
 
   return (
     <div className="listings-table-container">
@@ -205,9 +248,9 @@ export default function ListingsTableView({
                 <td>Rs{data.price}</td>
                 <td>{data.address}</td>
                 <td>{data.listing_date}</td>
-                <td className="actions-items"> 
-                    <MdDelete onClick={()=>handleDelete(data.property_id)}/>
-                    <BiSolidEdit/>
+                <td className="actions-items">
+                  <MdDelete onClick={() => handleDelete(data.property_id)} />
+                  <BiSolidEdit onClick={() => handleEdit(data)} />
                 </td>
               </tr>
             )
@@ -217,13 +260,13 @@ export default function ListingsTableView({
 
       {/* table footer */}
       <div className="table-footer">
-        <button>Delete Selected</button>
+        <button onClick={handleDeleteAllSelected}>Delete Selected</button>
         <div className="pagination-container">
           <span>
             Page {totalPages < 1 ? 0 : currentPage} of {totalPages}{" "}
             {/* if total page is 0 i.e no data from backend then our current should also be 0*/}
           </span>
-          <div className="pagination-button">
+          <div className="pagination">
             <button onClick={handleFirstPage} disabled={currentPage === 1}>
               First
             </button>
@@ -250,6 +293,13 @@ export default function ListingsTableView({
           </div>
         </div>
       </div>
+      {isEditModalOpen && (
+        <EditModal
+          data={editingItem}
+          onSave={handleEditSave}
+          onClose={handleEditCloseModal}
+        />
+      )}
     </div>
   );
 }

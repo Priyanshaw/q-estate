@@ -6,6 +6,7 @@ import FormControl from '@mui/material/FormControl';
 import Select from '@mui/material/Select';
 
 
+
 const options = ["none", "price", "date"];
 
 export default function SortingFilter({sortBy,handleSortByChange}) {
@@ -13,7 +14,7 @@ export default function SortingFilter({sortBy,handleSortByChange}) {
     <div className='sorting-filter-container'>
       <h2 className='title'>Sort By : </h2>
       <Box sx={{ minWidth: 120 }}>
-      <FormControl fullWidth>
+      <FormControl sx={{width:"250px"}}>
         <InputLabel id="demo-simple-select-label">Sort By</InputLabel>
         <Select
           labelId="sorting-label"

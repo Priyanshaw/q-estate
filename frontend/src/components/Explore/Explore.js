@@ -6,6 +6,7 @@ import CheckBoxFilter from "../CheckBoxFilter/CheckBoxFilter";
 import SortingFilter from "../SortingFilter/SortingFilter";
 import ListingsTableView from "../ListingsTableView/ListingsTableView";
 import Footer from "../Footer/Footer";
+import './Explore.css'
 
 export default function Explore() {
   const [listingsData, setListingsData] = useState([]);
