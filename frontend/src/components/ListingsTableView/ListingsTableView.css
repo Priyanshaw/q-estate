@@ -38,7 +38,7 @@ th {
 }
 
 .selected{ 
-    background-color: beige !important;
+    background-color: beige;
   }
 
 .pagination {

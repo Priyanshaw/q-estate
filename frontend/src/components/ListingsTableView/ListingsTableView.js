@@ -236,7 +236,10 @@ export default function ListingsTableView({
               data,
               index // slice used here to slice the data from start endex this is how we have only 10 datas per page
             ) => (
-              <tr className="table-row">
+              <tr className={`table-row ${
+                selectedRows.includes(data.property_id) ? "selected" : ""
+              }`}
+              key={index}>
                 <td>
                   <input
                     type="checkbox"
