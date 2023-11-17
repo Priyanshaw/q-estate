@@ -63,7 +63,7 @@ export default function Explore() {
   }, []);
   return (
     <>
-      <Header />
+      <Header onPage="explore" />
 
       <div className="property-listings-view">
 

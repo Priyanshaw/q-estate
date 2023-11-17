@@ -3,6 +3,7 @@ import { MdDelete } from "react-icons/md";
 import { BiSolidEdit } from "react-icons/bi";
 import EditModal from "../EditModal/EditModal";
 import './ListingsTableView.css'
+import { useNavigate } from "react-router-dom";
 
 export default function ListingsTableView({
   listingsData,
@@ -13,7 +14,8 @@ export default function ListingsTableView({
   // states to be defined
   // 1. current page holder i.e, page 1 of 11
   // 2. state for filtered data upon deletion
-  // 3. state for selected rows
+  // 3. state for selected 
+  const navigate = useNavigate();
 
   const [currentPage, setCurrentPage] = useState(1); // setting default page of table to 1
   const [filteredData, setFilteredData] = useState([]); // for handling the edit and delete action only
@@ -244,7 +246,7 @@ export default function ListingsTableView({
                     checked={selectedRows.includes(data.property_id)}
                   />
                 </td>
-                <td className="listing-property-name">{data.property_name}</td>
+                <td className="listing-property-name" onClick={()=>navigate(`/detail/${data.property_id}`)}>{data.property_name}</td>
                 <td>Rs{data.price}</td>
                 <td>{data.address}</td>
                 <td>{data.listing_date}</td>
