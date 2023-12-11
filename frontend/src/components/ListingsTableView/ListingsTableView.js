@@ -279,7 +279,9 @@ export default function ListingsTableView({
               Previous
             </button>
             {pageNumbers.map((page) => (
-              <button key={page} onClick={() => handlePageClicks(page)}>
+              <button key={page} onClick={() => handlePageClicks(page)}
+               className={`${page===currentPage?"active":""}`}
+              >
                 {page}
               </button>
             ))}

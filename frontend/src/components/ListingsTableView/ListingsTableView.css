@@ -72,7 +72,7 @@ tr:hover {
   cursor: not-allowed;
 }
 
-.pagination button:focus {
+.pagination button.active {
   background-color: #00bcd4;
 }
 
